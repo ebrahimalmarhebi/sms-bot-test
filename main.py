@@ -1,20 +1,19 @@
 import os
-from telegram import Update
-from telegram.ext import Application, CommandHandler, ContextTypes
+from telegram.ext import Updater, CommandHandler
 
-# نجيب التوكن من Environment Variable
-BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("✅ البوت شغال بنجاح")
+def start(update, context):
+    update.message.reply_text("✅ البوت شغال تمام")
 
 def main():
-    if not BOT_TOKEN:
-        raise ValueError("❌ TELEGRAM_BOT_TOKEN غير موجود")
+    updater = Updater(TOKEN, use_context=True)
+    dp = updater.dispatcher
 
-    app = Application.builder().token(BOT_TOKEN).build()
+    dp.add_handler(CommandHandler("start", start))
 
-    app.add_handler(CommandHandler("start", start))
+    updater.start_polling()
+    updater.idle()
 
-    print("🤖 Bot is running...")
-    app.run_polling()
+if __name__ == "__main__":
+    main()
